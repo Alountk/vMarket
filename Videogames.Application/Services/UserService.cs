@@ -9,10 +9,12 @@ namespace Videogames.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
+    private readonly ITokenService _tokenService;
 
-    public UserService(IUserRepository repository)
+    public UserService(IUserRepository repository, ITokenService tokenService)
     {
         _repository = repository;
+        _tokenService = tokenService;
     }
 
     public async Task<UserDto> CreateAsync(CreateUserDto createDto)
@@ -40,6 +42,23 @@ public class UserService : IUserService
 
         var created = await _repository.CreateAsync(user);
         return MapToDto(created);
+    }
+
+    public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
+    {
+        var user = await _repository.GetByEmailAsync(loginDto.Email);
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Invalid credentials");
+        }
+
+        if (!PasswordHasher.VerifyPassword(loginDto.Password, user.PasswordHash))
+        {
+            throw new UnauthorizedAccessException("Invalid credentials");
+        }
+
+        var token = _tokenService.GenerateToken(user);
+        return new AuthResponseDto(token, MapToDto(user));
     }
 
     public async Task<UserDto?> GetByIdAsync(Guid id)

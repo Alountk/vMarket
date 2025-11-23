@@ -5,6 +5,7 @@ using Videogames.Application.DTOs;
 public interface IUserService
 {
     Task<UserDto> CreateAsync(CreateUserDto createDto);
+    Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
     Task<UserDto?> GetByIdAsync(Guid id);
     Task<UserDto?> GetByEmailAsync(string email);
     Task<IEnumerable<UserDto>> GetAllAsync();
