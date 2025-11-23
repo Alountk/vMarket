@@ -6,26 +6,6 @@ A robust, scalable, and production-ready boilerplate for building .NET applicati
 
 This project follows the **Hexagonal Architecture** pattern, ensuring a strict separation of concerns:
 
-```mermaid
-graph TB
-    API[API Layer<br/>(Adapters)]
-    APP[Application Layer<br/>(Use Cases)]
-    DOM[Domain Layer<br/>(Core Logic)]
-    INF[Infrastructure Layer<br/>(Adapters)]
-    DB[(Database)]
-    
-    API -->|Uses| APP
-    APP -->|Uses| DOM
-    APP -->|Defines Ports| INF
-    INF -->|Implements Ports| APP
-    INF -->|Accesses| DB
-    
-    style DOM fill:#e1f5ff,stroke:#0077b6
-    style APP fill:#fff4e1,stroke:#fca311
-    style INF fill:#f0f0f0,stroke:#333
-    style API fill:#f0f0f0,stroke:#333
-```
-
 - **Domain Layer**: The heart of the software. Contains entities, value objects, and domain logic. Zero dependencies.
 - **Application Layer**: Orchestrates use cases and defines ports (interfaces) for infrastructure. Depends only on Domain.
 - **Infrastructure Layer**: Implements ports defined in Application (e.g., Repositories, Database access). Depends on Application and Domain.
