@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: videogames_postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=adminpassword
+      - POSTGRES_DB=videogamesdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_development:/var/lib/postgresql
+
+volumes:
+  postgres_data_development:

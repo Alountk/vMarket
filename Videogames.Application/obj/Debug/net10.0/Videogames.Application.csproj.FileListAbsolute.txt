@@ -1,0 +1,15 @@
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/bin/Debug/net10.0/Videogames.Application.deps.json
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/bin/Debug/net10.0/Videogames.Application.dll
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/bin/Debug/net10.0/Videogames.Application.pdb
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/bin/Debug/net10.0/Videogames.Domain.dll
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/bin/Debug/net10.0/Videogames.Domain.pdb
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.csproj.AssemblyReference.cache
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.AssemblyInfoInputs.cache
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.AssemblyInfo.cs
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.csproj.CoreCompileInputs.cache
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogam.4E3CA2A4.Up2Date
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.dll
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/refint/Videogames.Application.dll
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/Videogames.Application.pdb
+/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Application/obj/Debug/net10.0/ref/Videogames.Application.dll

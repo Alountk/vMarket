@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "dgSpecHash": "cJBcTllJKLQ=",
+  "success": true,
+  "projectFilePath": "/Volumes/Mac_Nvme/Dev/Dotnet/Boilerplate/Videogames.Infrastructure/Videogames.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/Users/alountk/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.entityframeworkcore/10.0.0/microsoft.entityframeworkcore.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.0/microsoft.entityframeworkcore.abstractions.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.0/microsoft.entityframeworkcore.analyzers.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.entityframeworkcore.relational/10.0.0/microsoft.entityframeworkcore.relational.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.0/microsoft.extensions.caching.abstractions.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.caching.memory/10.0.0/microsoft.extensions.caching.memory.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.0/microsoft.extensions.configuration.abstractions.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.0/microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.logging/10.0.0/microsoft.extensions.logging.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.0/microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.options/10.0.0/microsoft.extensions.options.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/microsoft.extensions.primitives/10.0.0/microsoft.extensions.primitives.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/npgsql/10.0.0/npgsql.10.0.0.nupkg.sha512",
+    "/Users/alountk/.nuget/packages/npgsql.entityframeworkcore.postgresql/10.0.0/npgsql.entityframeworkcore.postgresql.10.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
