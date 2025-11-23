@@ -87,11 +87,51 @@ graph TB
 4. **Run the Application**
    ```bash
    cd ../Videogames.API
-   dotnet run
-   ```
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/dotnet-hexagonal-boilerplate.git
+    cd dotnet-hexagonal-boilerplate
+    ```
 
-   The API will be available at `http://localhost:5017` (or similar port).
-   Swagger UI: `http://localhost:5017/swagger`
+2.  **Setup Database**
+    You can use the provided `docker-compose.yml` to start PostgreSQL:
+    ```bash
+    docker-compose up -d
+    ```
+
+3.  **Apply Migrations**
+    ```bash
+    cd Videogames.Infrastructure
+    dotnet ef database update -s ../Videogames.API
+    ```
+
+4.  **Run the Application**
+    ```bash
+    cd ../Videogames.API
+    dotnet run
+    ```
+
+    The API will be available at `http://localhost:5017` (or similar port).
+    Swagger UI: `http://localhost:5017/swagger`
+
+## Authentication
+
+The API is secured using JWT (JSON Web Tokens).
+
+1.  **Register**: Create a new user via `POST /api/Users`.
+2.  **Login**: Authenticate via `POST /api/Auth/login` to receive a JWT token.
+3.  **Access**: Include the token in the `Authorization` header for protected endpoints:
+    ```
+    Authorization: Bearer <your_token>
+    ```
+
+### Testing with Swagger
+
+1.  Navigate to `http://localhost:5017/swagger`.
+2.  Click the **Authorize** button.
+3.  Enter `Bearer <your_token>` in the value field.
+4.  Click **Authorize** and then **Close**.
+5.  Now you can execute protected endpoints.
 
 ## 📂 Project Structure
 
