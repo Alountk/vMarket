@@ -13,13 +13,8 @@ export class AuthService implements IAuthService {
   }
 
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const { recaptchaToken, ...userData } = data;
-    const config = recaptchaToken 
-      ? { headers: { 'X-Recaptcha-Token': recaptchaToken } }
-      : {};
-      
     // Fix: The endpoint is /Users (POST), not /Users/register based on UsersController
-    const response = await axiosInstance.post<AuthResponse>('/Users', userData, config);
+    const response = await axiosInstance.post<AuthResponse>('/Users', data);
     return response.data;
   }
 
