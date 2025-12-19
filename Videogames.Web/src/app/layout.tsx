@@ -1,4 +1,3 @@
-import { ThemeModeScript } from "flowbite-react";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Navbar from "../components/Navbar";
@@ -20,13 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <ThemeModeScript />
-      </head>
+      <head></head>
       <body className={montserrat.className}>
         <AuthProvider>
           <Contact />
-          {/* <Navbar /> */}
           <main className="container mx-auto p-4">{children}</main>
         </AuthProvider>
       </body>
