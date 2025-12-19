@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Videogame } from "../domain/models/Videogame";
 import { VideogameService } from "../infrastructure/services/VideogameService";
 import VideogameCard from "../components/VideogameCard";
@@ -9,25 +9,26 @@ import Link from "next/link";
 
 export default function Home() {
   const [videogames, setVideogames] = useState<Videogame[]>([]);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const videogameService = new VideogameService();
 
   useEffect(() => {
+    console.log("isAuthenticated", isAuthenticated, user);
     if (isAuthenticated) {
       loadVideogames();
     }
   }, [isAuthenticated]);
 
-  const loadVideogames = async () => {
+  const loadVideogames = useCallback(async () => {
     try {
       const data = await videogameService.getAll();
       setVideogames(data);
     } catch (error) {
       console.error("Failed to load videogames", error);
     }
-  };
+  }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (confirm("Are you sure you want to delete this game?")) {
       try {
         await videogameService.delete(id);
@@ -36,8 +37,8 @@ export default function Home() {
         console.error("Failed to delete videogame", error);
       }
     }
-  };
-
+  }, [loadVideogames]);
+  
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
