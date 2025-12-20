@@ -34,7 +34,16 @@ public class VideogameServiceTests
             new List<string> { "image1" },
             GameState.Released,
             DateTime.Now,
-            "1.0.0"
+            "1.0.0",
+            "A great game",
+            "http://image.url",
+            5.0m,
+            50.0m,
+            45.0m,
+            10.0m,
+            9.5m,
+            1,
+            new List<GameContent>()
         );
 
         _repositoryMock.Setup(r => r.CreateAsync(It.IsAny<Videogame>()))

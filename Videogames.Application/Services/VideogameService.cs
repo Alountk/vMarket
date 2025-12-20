@@ -27,7 +27,16 @@ public class VideogameService : IVideogameService
             Images = createDto.Images,
             State = createDto.State,
             ReleaseDate = createDto.ReleaseDate,
-            VersionGame = createDto.VersionGame
+            VersionGame = createDto.VersionGame,
+            Description = createDto.Description,
+            UrlImg = createDto.UrlImg,
+            GeneralState = createDto.GeneralState,
+            AveragePrice = createDto.AveragePrice,
+            OwnPrice = createDto.OwnPrice,
+            AcceptOffersRange = createDto.AcceptOffersRange,
+            Score = createDto.Score,
+            Category = createDto.Category,
+            Contents = createDto.Contents
         };
 
         var created = await _repository.CreateAsync(videogame);
@@ -65,6 +74,15 @@ public class VideogameService : IVideogameService
         existing.State = updateDto.State;
         existing.ReleaseDate = updateDto.ReleaseDate;
         existing.VersionGame = updateDto.VersionGame;
+        existing.Description = updateDto.Description;
+        existing.UrlImg = updateDto.UrlImg;
+        existing.GeneralState = updateDto.GeneralState;
+        existing.AveragePrice = updateDto.AveragePrice;
+        existing.OwnPrice = updateDto.OwnPrice;
+        existing.AcceptOffersRange = updateDto.AcceptOffersRange;
+        existing.Score = updateDto.Score;
+        existing.Category = updateDto.Category;
+        existing.Contents = updateDto.Contents;
 
         await _repository.UpdateAsync(existing);
     }
@@ -87,7 +105,16 @@ public class VideogameService : IVideogameService
             videogame.Images,
             videogame.State,
             videogame.ReleaseDate,
-            videogame.VersionGame
+            videogame.VersionGame,
+            videogame.Description,
+            videogame.UrlImg,
+            videogame.GeneralState,
+            videogame.AveragePrice,
+            videogame.OwnPrice,
+            videogame.AcceptOffersRange,
+            videogame.Score,
+            videogame.Category,
+            videogame.Contents
         );
     }
 }

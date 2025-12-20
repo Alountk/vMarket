@@ -13,5 +13,14 @@ public record UpdateVideogameDto(
     List<string> Images,
     GameState State,
     DateTime ReleaseDate,
-    string VersionGame
+    string VersionGame,
+    string Description,
+    string UrlImg,
+    decimal GeneralState,
+    decimal AveragePrice,
+    decimal OwnPrice,
+    decimal AcceptOffersRange,
+    decimal Score,
+    int Category,
+    List<GameContent> Contents
 );
