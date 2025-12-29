@@ -88,3 +88,9 @@ Desktop.ini
 # User-specific configuration
 **/appsettings*.json
 !**/appsettings.json
+
+# Playwright
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/
+*.log

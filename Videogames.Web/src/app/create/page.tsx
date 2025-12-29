@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { VideogameService } from "../../infrastructure/services/VideogameService";
 import { GameState } from "../../domain/models/Videogame";
@@ -14,10 +14,28 @@ import {
   TagIcon,
 } from "@heroicons/react/24/outline";
 
+import { useAuth } from "../../context/AuthContext";
+
 export default function CreateVideogamePage() {
+  const { user, loading: authLoading } = useAuth();
+
   const router = useRouter();
   const videogameService = new VideogameService();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   const [formData, setFormData] = useState({
     englishName: "",
