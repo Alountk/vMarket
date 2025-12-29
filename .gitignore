@@ -93,3 +93,4 @@ Desktop.ini
 **/test-results/
 **/playwright-report/
 **/playwright/.cache/
+*.log
