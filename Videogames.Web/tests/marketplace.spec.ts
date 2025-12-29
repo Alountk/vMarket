@@ -47,6 +47,9 @@ test.describe('Marketplace Flow', () => {
     await expect(page).toHaveURL(/.*\//);
     await expect(page.locator('text=Hi John!')).toBeVisible();
     
+    // Ensure localstorage is synced before moving to the next page
+    await page.waitForFunction(() => localStorage.getItem('user') !== null);
+    
     // 2. Go to Sell
     // Using click to maintain session context better than hard navigation
     await page.getByRole('link', { name: 'Sell', exact: true }).click();
