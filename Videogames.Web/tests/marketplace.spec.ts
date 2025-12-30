@@ -100,6 +100,17 @@ test.describe('Marketplace Flow', () => {
       });
     });
 
+    // Mock image retrieval response (since we use a fake filename)
+    await page.route('**/api/Images/e2e-mock-image-guid.png', async route => {
+      // Return a 302 redirect to a placeholder, or just 200 with dummy content
+      // Since frontend follows redirect, mocking 200 with image content is easier for test
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/png',
+        body: Buffer.from('fake-image-content'), // Minimal content
+      });
+    });
+
     // Upload multiple cover images
     await page.locator('#imageUpload').setInputFiles([
       'tests/assets/test-image.png',
@@ -107,8 +118,9 @@ test.describe('Marketplace Flow', () => {
     ]);
     
     // Wait for uploads to complete - should see 2 image previews in grid
-    await expect(page.locator('.grid > div').first()).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('.grid > div')).toHaveCount(2);
+    // Use specific alt text selector since .grid > div is too generic
+    await expect(page.locator('img[alt^="Preview "]').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('img[alt^="Preview "]')).toHaveCount(2);
     
     // Submit
     await page.getByRole('button', { name: 'List Item Now' }).click();

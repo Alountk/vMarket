@@ -40,4 +40,22 @@ public class ImageServiceTests
         
         _storagePortMock.Verify(s => s.UploadFileAsync(stream, It.IsAny<string>(), contentType), Times.Once);
     }
+
+    [Fact]
+    public async Task GetImageUrlAsync_ShouldCallStoragePort()
+    {
+        // Arrange
+        var fileName = "test-image.jpg";
+        var expectedUrl = "https://s3.example.com/videogames/test-image.jpg?token=123";
+        
+        _storagePortMock.Setup(s => s.GetFileUrlAsync(fileName))
+            .ReturnsAsync(expectedUrl);
+
+        // Act
+        var result = await _service.GetImageUrlAsync(fileName);
+
+        // Assert
+        Assert.Equal(expectedUrl, result);
+        _storagePortMock.Verify(s => s.GetFileUrlAsync(fileName), Times.Once);
+    }
 }
