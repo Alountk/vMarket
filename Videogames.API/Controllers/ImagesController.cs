@@ -1,0 +1,45 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Videogames.Application.Services;
+
+namespace Videogames.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class ImagesController : ControllerBase
+{
+    private readonly IImageService _imageService;
+    private readonly ILogger<ImagesController> _logger;
+
+    public ImagesController(IImageService imageService, ILogger<ImagesController> logger)
+    {
+        _imageService = imageService;
+        _logger = logger;
+    }
+
+    [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Upload(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+
+        try
+        {
+            _logger.LogInformation("Uploading image: {FileName}, ContentType: {ContentType}", file.FileName, file.ContentType);
+
+            using var stream = file.OpenReadStream();
+            var fileName = await _imageService.UploadImageAsync(stream, file.ContentType);
+
+            return Ok(new { fileName });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading image");
+            return StatusCode(500, "Internal server error during image upload.");
+        }
+    }
+}
