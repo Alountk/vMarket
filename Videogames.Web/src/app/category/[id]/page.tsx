@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, use } from "react";
-import {
-  ArrowLeftIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-} from "@heroicons/react/24/outline";
+import { Squares2X2Icon, ListBulletIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { CATEGORIES } from "../../../constants/categories";
 import { Videogame } from "../../../domain/models/Videogame";
@@ -36,7 +32,7 @@ export default function CategoryPage({
         (g) => g.category === category.categoryId
       );
       setVideogames(filtered);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to load videogames for category", error);
     } finally {
       setLoading(false);

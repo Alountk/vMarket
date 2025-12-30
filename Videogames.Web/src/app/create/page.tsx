@@ -23,20 +23,6 @@ export default function CreateVideogamePage() {
   const videogameService = new VideogameService();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, authLoading, router]);
-
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   const [formData, setFormData] = useState({
     englishName: "",
     qr: "",
@@ -66,6 +52,20 @@ export default function CreateVideogamePage() {
       bottomSideUrl: "",
     },
   ]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   const handleChange = (
     e: React.ChangeEvent<

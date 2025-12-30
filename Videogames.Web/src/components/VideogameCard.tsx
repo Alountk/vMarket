@@ -19,12 +19,11 @@ export default function VideogameCard({
     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-900">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={
-            videogame.urlImg || "https://via.placeholder.com/300?text=No+Image"
-          }
+          src={videogame.urlImg || "/placeholder-game.jpg"}
           alt={videogame.englishName}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <button className="absolute top-2 right-2 p-1.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors">
           <HeartIcon className="h-5 w-5" />

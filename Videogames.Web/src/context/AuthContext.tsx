@@ -28,22 +28,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const authService = new AuthService();
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== "undefined") {
+      const authService = new AuthService();
+      return authService.getCurrentUser();
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState(() => {
+    return typeof window === "undefined";
+  });
 
   useEffect(() => {
-    const currentUser = authService.getCurrentUser();
-    setUser(currentUser);
-    setLoading(false);
+    // If we're on client, we're done loading after the initial render sync
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+    }
   }, []);
 
   const login = async (credentials: LoginRequest) => {
+    const authService = new AuthService();
     const response = await authService.login(credentials);
     setUser(response.user);
   };
 
   const register = async (data: RegisterRequest) => {
+    const authService = new AuthService();
     const response = await authService.register(data);
     if (response.user) {
       setUser(response.user);
@@ -51,11 +62,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    const authService = new AuthService();
     authService.logout();
     setUser(null);
   };
 
   const updateUser = async (id: string, data: UpdateUserRequest) => {
+    const authService = new AuthService();
     const updatedUser = await authService.updateUser(id, data);
     setUser(updatedUser);
   };

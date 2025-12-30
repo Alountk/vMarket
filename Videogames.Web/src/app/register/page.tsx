@@ -33,14 +33,14 @@ export default function RegisterPage() {
         password: formData.password,
       });
       router.push("/");
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Registration failed");
+    } catch (err: unknown) {
+      setError("Registration failed. Please try again.");
       console.error(err);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-140px)] bg-gray-50 dark:bg-gray-900 py-10 transition-colors duration-300">
+    <div className="flex justify-center items-center min-h-[calc(100vh-140px)] bg-gray-50 dark:bg-900 py-10 transition-colors duration-300">
       <div className="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-xl w-full max-w-xl border border-gray-100 dark:border-gray-700">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
