@@ -1,5 +1,19 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeAll(async ({ request }) => {
+  // Try to register the test user
+  await request.post('http://localhost:5017/api/Users', {
+    data: {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@example.com',
+      password: 'StrongPassword123!'
+    }
+  });
+  // We don't check for success here because it might fail if user already exists (local dev),
+  // and we just want to ensure it EXISTS before we try to login.
+});
+
 test.describe('Authentication Flow', () => {
   test('should login successfully with valid credentials', async ({ page }) => {
     // Go to homepage

@@ -1,5 +1,17 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeAll(async ({ request }) => {
+  // Try to register the test user
+  await request.post('http://localhost:5017/api/Users', {
+    data: {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@example.com',
+      password: 'StrongPassword123!'
+    }
+  });
+});
+
 test.describe('Marketplace Flow', () => {
   test('should display hero section and categories on home page', async ({ page }) => {
     await page.goto('/');
