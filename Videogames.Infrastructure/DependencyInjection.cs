@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Videogames.Application.Services;
 using Videogames.Application.Settings;
 using Videogames.Domain.Ports;
+using Videogames.Infrastructure.Adapters;
+using Videogames.Infrastructure.Configuration;
 using Videogames.Infrastructure.Persistence;
 using Videogames.Infrastructure.Repositories;
 
@@ -31,13 +33,17 @@ public static class DependencyInjection
         }
 
         // Configuration
-        // Configuration
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.Configure<MinioSettings>(configuration.GetSection(MinioSettings.SectionName));
 
         // Application Services
         services.AddScoped<IVideogameService, VideogameService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IImageService, ImageService>();
+
+        // Adapters
+        services.AddScoped<IStoragePort, MinioStorageAdapter>();
         
         return services;
     }
