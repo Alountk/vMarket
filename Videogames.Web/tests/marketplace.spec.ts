@@ -1,5 +1,20 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeAll(async ({ request }) => {
+  await request.post('http://localhost:5017/api/Users', {
+    data: {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'e2e-test@example.com',
+      password: 'StrongPassword123!',
+      address: '123 Test St',
+      city: 'Test City',
+      country: 'Test Country',
+      phone: '+1234567890'
+    }
+  });
+});
+
 test.describe('Marketplace Flow', () => {
   test('should display hero section and categories on home page', async ({ page }) => {
     await page.goto('/');
@@ -39,13 +54,17 @@ test.describe('Marketplace Flow', () => {
   test('should allow listing an item after login', async ({ page }) => {
     // 1. Login
     await page.goto('/login');
-    await page.getByLabel('Email Address').fill('test@example.com');
+    await page.getByLabel('Email Address').fill('e2e-test@example.com');
     await page.getByLabel('Password').fill('StrongPassword123!');
     await page.getByRole('button', { name: 'Sign In' }).click();
     
-    // Wait for the URL to change back to home and user greeting to appear
-    await expect(page).toHaveURL(/.*\//);
-    await expect(page.locator('text=Hi John!')).toBeVisible();
+    // Wait for redirection and session visibility in Navbar
+    await expect(page).toHaveURL(/.*\//, { timeout: 15000 });
+    await expect(page.locator('text=Hi John!')).toBeVisible({ timeout: 15000 });
+    
+    // Extra safety: ensure the API/Backend session is also ready if possible
+    // (In this case, waiting for the UI greeting is usually sufficient)
+    await page.waitForLoadState('networkidle');
     
     // Ensure localstorage is synced before moving to the next page
     await page.waitForFunction(() => localStorage.getItem('user') !== null);

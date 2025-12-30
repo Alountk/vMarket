@@ -76,10 +76,11 @@ export default function Home() {
         <div className="flex-1 w-full max-w-md">
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500 blur-3xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800"
-              alt="Gaming Scene"
-              className="rounded-2xl shadow-2xl relative z-10 transform group-hover:scale-[1.02] transition-transform duration-500"
+              src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"
+              alt="Gaming setup 1"
+              className="w-full h-full object-cover rounded-2xl transform group-hover:scale-105 transition-transform duration-700"
             />
           </div>
         </div>
@@ -109,6 +110,7 @@ export default function Home() {
                 href={`/category/${cat.id}`}
                 className="block h-40 overflow-hidden relative group/img"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={cat.img}
                   alt={cat.name}

@@ -15,11 +15,21 @@ import { UpdateUserRequest } from "../../domain/ports/IAuthService";
 export default function ProfilePage() {
   const { user, updateUser, loading } = useAuth();
   const router = useRouter();
-  const [formData, setFormData] = useState<UpdateUserRequest>({});
+  const [formData, setFormData] = useState<UpdateUserRequest>(() => ({
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    country: user?.country || "",
+    phone: user?.phone || "",
+  }));
+
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (user) {
+    if (user && !formData.email) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -30,7 +40,7 @@ export default function ProfilePage() {
         phone: user.phone,
       });
     }
-  }, [user]);
+  }, [user, formData.email]);
 
   if (loading) {
     return (

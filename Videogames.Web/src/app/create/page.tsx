@@ -23,20 +23,6 @@ export default function CreateVideogamePage() {
   const videogameService = new VideogameService();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, authLoading, router]);
-
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   const [formData, setFormData] = useState({
     englishName: "",
     qr: "",
@@ -66,6 +52,20 @@ export default function CreateVideogamePage() {
       bottomSideUrl: "",
     },
   ]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -135,6 +135,7 @@ export default function CreateVideogamePage() {
         })),
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await videogameService.create(payload as any);
       router.push("/");
     } catch (error) {
@@ -161,10 +162,14 @@ export default function CreateVideogamePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                <label
+                  htmlFor="englishName"
+                  className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                >
                   English Name
                 </label>
                 <input
+                  id="englishName"
                   name="englishName"
                   value={formData.englishName}
                   onChange={handleChange}
@@ -174,10 +179,14 @@ export default function CreateVideogamePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                <label
+                  htmlFor="console"
+                  className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                >
                   Console
                 </label>
                 <input
+                  id="console"
                   name="console"
                   value={formData.console}
                   onChange={handleChange}
@@ -187,10 +196,14 @@ export default function CreateVideogamePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                <label
+                  htmlFor="releaseDate"
+                  className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                >
                   Release Date
                 </label>
                 <input
+                  id="releaseDate"
                   name="releaseDate"
                   type="date"
                   value={formData.releaseDate}
@@ -200,10 +213,14 @@ export default function CreateVideogamePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                <label
+                  htmlFor="versionGame"
+                  className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                >
                   Version
                 </label>
                 <input
+                  id="versionGame"
                   name="versionGame"
                   value={formData.versionGame}
                   onChange={handleChange}
@@ -212,10 +229,14 @@ export default function CreateVideogamePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                >
                   Category
                 </label>
                 <select
+                  id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
@@ -324,10 +345,14 @@ export default function CreateVideogamePage() {
               <div className="space-y-4">
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                    <label
+                      htmlFor="averagePrice"
+                      className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                    >
                       Average Market Price
                     </label>
                     <input
+                      id="averagePrice"
                       name="averagePrice"
                       type="number"
                       step="0.01"
@@ -337,10 +362,14 @@ export default function CreateVideogamePage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+                    <label
+                      htmlFor="ownPrice"
+                      className="block text-sm font-semibold mb-2 dark:text-gray-300"
+                    >
                       Your Asking Price
                     </label>
                     <input
+                      id="ownPrice"
                       name="ownPrice"
                       type="number"
                       step="0.01"
@@ -513,10 +542,14 @@ export default function CreateVideogamePage() {
           </section>
 
           <section>
-            <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+            <label
+              htmlFor="description"
+              className="block text-sm font-semibold mb-2 dark:text-gray-300"
+            >
               Detailed Description
             </label>
             <textarea
+              id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
