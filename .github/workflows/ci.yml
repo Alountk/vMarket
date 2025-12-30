@@ -31,6 +31,20 @@ jobs:
     name: Frontend CI (Next.js & Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    services:
+      minio:
+        image: minio/minio
+        ports:
+          - 9000:9000
+          - 9001:9001
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        options: >-
+          --health-cmd "curl -f http://localhost:9000/minio/health/live"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -57,6 +71,13 @@ jobs:
       - name: Install Playwright Browsers
         working-directory: Videogames.Web
         run: npx playwright install --with-deps chromium
+
+      - name: Create Minio Bucket
+        run: |
+          curl http://localhost:9000/minio/health/live
+          # Using mc (minio client) is better, but for a simple "make bucket" we can try to use a docker container or just shell if mc is not there.
+          # Ubuntu latest might not have mc. Let's use a quick docker run.
+          docker run --net=host --entrypoint=/bin/sh minio/mc -c "mc alias set myminio http://localhost:9000 minioadmin minioadmin && mc mb myminio/videogames && mc anonymous set public myminio/videogames"
 
       - name: Run Playwright tests
         working-directory: Videogames.Web
