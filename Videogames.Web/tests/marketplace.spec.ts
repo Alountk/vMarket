@@ -91,6 +91,15 @@ test.describe('Marketplace Flow', () => {
     // Fill description
     await page.getByLabel('Detailed Description').fill('This is a test game created by Playwright E2E.');
     
+    // Upload image
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.getByLabel('Upload Cover Image').click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('tests/assets/test-image.png');
+    
+    // Wait for upload and preview "READY" signal
+    await expect(page.locator('text=READY')).toBeVisible({ timeout: 10000 });
+    
     // Submit
     await page.getByRole('button', { name: 'List Item Now' }).click();
     

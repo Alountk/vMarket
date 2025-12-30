@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { VideogameService } from "../../infrastructure/services/VideogameService";
+import { ImageService } from "../../infrastructure/services/ImageService";
 import { GameState } from "../../domain/models/Videogame";
 import {
   PhotoIcon,
@@ -21,7 +22,9 @@ export default function CreateVideogamePage() {
 
   const router = useRouter();
   const videogameService = new VideogameService();
+  const imageService = new ImageService();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [formData, setFormData] = useState({
     englishName: "",
@@ -77,6 +80,27 @@ export default function CreateVideogamePage() {
       ...prev,
       [name]: type === "number" ? parseFloat(value) : value,
     }));
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileName = await imageService.uploadImage(file);
+      // We store the filename. The backend/infrastructure will resolve the full path if needed,
+      // but for now we follow the user requirement of returning the GUID filename.
+      setFormData((prev) => ({
+        ...prev,
+        urlImg: fileName,
+      }));
+    } catch (error) {
+      console.error("Image upload failed", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleNameChange = (
@@ -454,15 +478,57 @@ export default function CreateVideogamePage() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
-                Main Thumbnail URL
+              <label
+                htmlFor="imageUpload"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
+                Upload Cover Image
               </label>
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <input
+                    id="imageUpload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="form-input"
+                    disabled={uploading}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    JPG, PNG or WebP. Max 5MB.
+                  </p>
+                </div>
+                {uploading && (
+                  <div className="flex items-center gap-2 text-blue-600 text-sm font-medium">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    Uploading...
+                  </div>
+                )}
+                {formData.urlImg && !uploading && (
+                  <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`http://localhost:9000/videogames/${formData.urlImg}`} // Hardcoded MinIO URL for preview if proxying not set
+                      alt="Preview"
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        // If preview fails (e.g. MinIO not accessible directly), show simple status
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-green-500/10 children">
+                      <span className="text-[10px] font-bold text-green-600 bg-white/90 px-1 rounded">
+                        READY
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
               <input
+                type="hidden"
                 name="urlImg"
                 value={formData.urlImg}
-                onChange={handleChange}
-                className="form-input"
-                placeholder="https://..."
+                required
               />
             </div>
 
