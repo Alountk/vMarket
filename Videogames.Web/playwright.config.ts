@@ -39,12 +39,22 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    stdout: 'pipe',
-    stderr: 'pipe',
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command: 'npm run dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      timeout: 120000,
+    },
+    {
+      command: 'dotnet run --project ../Videogames.API/Videogames.API.csproj --urls http://localhost:5017',
+      url: 'http://localhost:5017/swagger/index.html',
+      reuseExistingServer: !process.env.CI,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      timeout: 120000,
+    }
+  ],
 });
