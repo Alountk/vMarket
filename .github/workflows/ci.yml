@@ -31,15 +31,6 @@ jobs:
     name: Frontend CI (Next.js & Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    services:
-      minio:
-        image: minio/minio
-        ports:
-          - 9000:9000
-          - 9001:9001
-        env:
-          MINIO_ROOT_USER: minioadmin
-          MINIO_ROOT_PASSWORD: minioadmin
     steps:
       - uses: actions/checkout@v4
 
@@ -66,18 +57,6 @@ jobs:
       - name: Install Playwright Browsers
         working-directory: Videogames.Web
         run: npx playwright install --with-deps chromium
-
-      - name: Create Minio Bucket
-        run: |
-          # Use mc to wait for minio and create bucket
-          docker run --net=host --entrypoint=/bin/sh minio/mc -c "
-            until mc alias set myminio http://localhost:9000 minioadmin minioadmin; do
-              echo 'Waiting for Minio...'
-              sleep 2
-            done
-            mc mb myminio/videogames || true
-            mc anonymous set public myminio/videogames
-          "
 
       - name: Run Playwright tests
         working-directory: Videogames.Web

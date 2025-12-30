@@ -91,6 +91,15 @@ test.describe('Marketplace Flow', () => {
     // Fill description
     await page.getByLabel('Detailed Description').fill('This is a test game created by Playwright E2E.');
     
+    // Mock image upload response for CI environment
+    await page.route('**/api/Images/upload', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ fileName: 'e2e-mock-image-guid.png' }),
+      });
+    });
+
     // Upload image
     const fileChooserPromise = page.waitForEvent('filechooser');
     await page.getByLabel('Upload Cover Image').click();
