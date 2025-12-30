@@ -22,7 +22,7 @@ public class MinioStorageAdapter : IStoragePort
             UseHttp = !_settings.UseSSL
         };
 
-        _s3Client = new AmazonS3Client(_settings.AccessKey, _settings.SecretKey, config);
+        _s3Client = new AmazonS3Client(_settings.User, _settings.Secret, config);
     }
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)

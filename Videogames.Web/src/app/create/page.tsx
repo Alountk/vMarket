@@ -25,6 +25,11 @@ export default function CreateVideogamePage() {
   const imageService = new ImageService();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingStates, setUploadingStates] = useState<
+    Record<string, boolean>
+  >({});
+  const [images, setImages] = useState<string[]>([]);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const [formData, setFormData] = useState({
     englishName: "",
@@ -35,7 +40,7 @@ export default function CreateVideogamePage() {
     releaseDate: "",
     versionGame: "",
     description: "",
-    urlImg: "",
+    urlImg: "", // Keep for backward compatibility, will use first image from images array
     generalState: 0,
     averagePrice: 0,
     ownPrice: 0,
@@ -82,24 +87,71 @@ export default function CreateVideogamePage() {
     }));
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleMultipleFilesChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploading(true);
     try {
-      const fileName = await imageService.uploadImage(file);
-      // We store the filename. The backend/infrastructure will resolve the full path if needed,
-      // but for now we follow the user requirement of returning the GUID filename.
-      setFormData((prev) => ({
-        ...prev,
-        urlImg: fileName,
-      }));
+      const uploadPromises = Array.from(files).map((file) =>
+        imageService.uploadImage(file)
+      );
+      const fileNames = await Promise.all(uploadPromises);
+
+      setImages((prev) => [...prev, ...fileNames]);
+      // Set first image as urlImg for backward compatibility
+      if (images.length === 0 && fileNames.length > 0) {
+        setFormData((prev) => ({ ...prev, urlImg: fileNames[0] }));
+      }
     } catch (error) {
       console.error("Image upload failed", error);
-      alert("Failed to upload image. Please try again.");
+      alert("Failed to upload images. Please try again.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = images.filter((_, i) => i !== index);
+    setImages(newImages);
+    // Update urlImg to first remaining image or empty
+    setFormData((prev) => ({ ...prev, urlImg: newImages[0] || "" }));
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (draggedIndex === null) return;
+
+    const newImages = [...images];
+    const [draggedImage] = newImages.splice(draggedIndex, 1);
+    newImages.splice(dropIndex, 0, draggedImage);
+
+    setImages(newImages);
+    setFormData((prev) => ({ ...prev, urlImg: newImages[0] || "" }));
+    setDraggedIndex(null);
+  };
+
+  const handleSideImageUpload = async (side: string, file: File) => {
+    setUploadingStates((prev) => ({ ...prev, [side]: true }));
+    try {
+      const fileName = await imageService.uploadImage(file);
+      const newContents = [...contents];
+      newContents[0] = { ...newContents[0], [side]: fileName };
+      setContents(newContents);
+    } catch (error) {
+      console.error(`Failed to upload ${side} image`, error);
+      alert(`Failed to upload ${side} image. Please try again.`);
+    } finally {
+      setUploadingStates((prev) => ({ ...prev, [side]: false }));
     }
   };
 
@@ -146,7 +198,7 @@ export default function CreateVideogamePage() {
           (n) => n.name.trim() !== "" && n.language.trim() !== ""
         ),
         assets: [],
-        images: [],
+        images: images, // Use the images array
         // Ensure date is in ISO format
         releaseDate: new Date(formData.releaseDate).toISOString(),
         contents: contents.map((c) => ({
@@ -482,20 +534,22 @@ export default function CreateVideogamePage() {
                 htmlFor="imageUpload"
                 className="block text-sm font-semibold mb-2 dark:text-gray-300"
               >
-                Upload Cover Image
+                Upload Cover Images
               </label>
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
+              <div className="space-y-4">
+                <div>
                   <input
                     id="imageUpload"
                     type="file"
                     accept="image/*"
-                    onChange={handleFileChange}
+                    multiple
+                    onChange={handleMultipleFilesChange}
                     className="form-input"
                     disabled={uploading}
                   />
                   <p className="mt-1 text-xs text-gray-500">
-                    JPG, PNG or WebP. Max 5MB.
+                    JPG, PNG or WebP. Max 5MB each. You can upload multiple
+                    images.
                   </p>
                 </div>
                 {uploading && (
@@ -504,32 +558,55 @@ export default function CreateVideogamePage() {
                     Uploading...
                   </div>
                 )}
-                {formData.urlImg && !uploading && (
-                  <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`http://localhost:9000/videogames/${formData.urlImg}`} // Hardcoded MinIO URL for preview if proxying not set
-                      alt="Preview"
-                      className="h-full w-full object-cover"
-                      onError={(e) => {
-                        // If preview fails (e.g. MinIO not accessible directly), show simple status
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-green-500/10 children">
-                      <span className="text-[10px] font-bold text-green-600 bg-white/90 px-1 rounded">
-                        READY
-                      </span>
-                    </div>
+                {images.length > 0 && !uploading && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {images.map((img, index) => (
+                      <div
+                        key={index}
+                        draggable
+                        onDragStart={() => handleDragStart(index)}
+                        onDragOver={handleDragOver}
+                        onDrop={() => handleDrop(index)}
+                        className="relative group cursor-move rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`https://s3.androemda-surf.uk/videogames/${img}`}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-32 object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EImage%3C/text%3E%3C/svg%3E';
+                          }}
+                        />
+                        <div className="absolute top-1 left-1 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                          {index + 1}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
-              <input
-                type="hidden"
-                name="urlImg"
-                value={formData.urlImg}
-                required
-              />
+              <input type="hidden" name="urlImg" value={formData.urlImg} />
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl space-y-6">
@@ -541,66 +618,274 @@ export default function CreateVideogamePage() {
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Front
                   </label>
+                  {contents[0].frontalUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].frontalUrl}`}
+                        alt="Front preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EFront%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("frontalUrl", file);
+                      }}
+                      className="hidden"
+                      id="frontalUrl-upload"
+                    />
+                    <label
+                      htmlFor="frontalUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["frontalUrl"]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="frontalUrl"
                     value={contents[0].frontalUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Back
                   </label>
+                  {contents[0].backUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].backUrl}`}
+                        alt="Back preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EBack%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("backUrl", file);
+                      }}
+                      className="hidden"
+                      id="backUrl-upload"
+                    />
+                    <label
+                      htmlFor="backUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["backUrl"] ? "Uploading..." : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="backUrl"
                     value={contents[0].backUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Right Side
                   </label>
+                  {contents[0].rightSideUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].rightSideUrl}`}
+                        alt="Right side preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ERight%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("rightSideUrl", file);
+                      }}
+                      className="hidden"
+                      id="rightSideUrl-upload"
+                    />
+                    <label
+                      htmlFor="rightSideUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["rightSideUrl"]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="rightSideUrl"
                     value={contents[0].rightSideUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Left Side
                   </label>
+                  {contents[0].leftSideUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].leftSideUrl}`}
+                        alt="Left side preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ELeft%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("leftSideUrl", file);
+                      }}
+                      className="hidden"
+                      id="leftSideUrl-upload"
+                    />
+                    <label
+                      htmlFor="leftSideUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["leftSideUrl"]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="leftSideUrl"
                     value={contents[0].leftSideUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Top
                   </label>
+                  {contents[0].topSideUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].topSideUrl}`}
+                        alt="Top preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ETop%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("topSideUrl", file);
+                      }}
+                      className="hidden"
+                      id="topSideUrl-upload"
+                    />
+                    <label
+                      htmlFor="topSideUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["topSideUrl"]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="topSideUrl"
                     value={contents[0].topSideUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold mb-1 dark:text-gray-500 uppercase">
                     Bottom
                   </label>
+                  {contents[0].bottomSideUrl && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].bottomSideUrl}`}
+                        alt="Bottom preview"
+                        className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EBottom%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleSideImageUpload("bottomSideUrl", file);
+                      }}
+                      className="hidden"
+                      id="bottomSideUrl-upload"
+                    />
+                    <label
+                      htmlFor="bottomSideUrl-upload"
+                      className="flex-1 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 px-3 rounded text-center transition-colors"
+                    >
+                      {uploadingStates["bottomSideUrl"]
+                        ? "Uploading..."
+                        : "Upload"}
+                    </label>
+                  </div>
                   <input
                     name="bottomSideUrl"
                     value={contents[0].bottomSideUrl}
                     onChange={(e) => handleContentChange(0, e)}
-                    className="form-input text-xs"
+                    className="form-input text-xs mt-2"
+                    placeholder="Or paste URL"
                   />
                 </div>
               </div>

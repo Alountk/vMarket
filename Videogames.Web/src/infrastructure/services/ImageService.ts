@@ -7,12 +7,7 @@ export class ImageService {
 
     const response = await axiosInstance.post<{ fileName: string }>(
       "/Images/upload",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
 
     return response.data.fileName;
