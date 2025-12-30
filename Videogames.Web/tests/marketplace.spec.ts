@@ -1,13 +1,16 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeAll(async ({ request }) => {
-  // Try to register the test user
   await request.post('http://localhost:5017/api/Users', {
     data: {
       firstName: 'John',
       lastName: 'Doe',
       email: 'test@example.com',
-      password: 'StrongPassword123!'
+      password: 'StrongPassword123!',
+      address: '123 Test St',
+      city: 'Test City',
+      country: 'Test Country',
+      phone: '+1234567890'
     }
   });
 });

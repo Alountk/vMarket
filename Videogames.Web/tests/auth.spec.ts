@@ -1,17 +1,22 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeAll(async ({ request }) => {
-  // Try to register the test user
-  await request.post('http://localhost:5017/api/Users', {
+  const response = await request.post('http://localhost:5017/api/Users', {
     data: {
       firstName: 'John',
       lastName: 'Doe',
       email: 'test@example.com',
-      password: 'StrongPassword123!'
+      password: 'StrongPassword123!',
+      address: '123 Test St',
+      city: 'Test City',
+      country: 'Test Country',
+      phone: '+1234567890'
     }
   });
-  // We don't check for success here because it might fail if user already exists (local dev),
-  // and we just want to ensure it EXISTS before we try to login.
+  if (response.status() === 400) {
+    const errorBody = await response.json();
+    console.log('Registration 400 details:', JSON.stringify(errorBody, null, 2));
+  }
 });
 
 test.describe('Authentication Flow', () => {
