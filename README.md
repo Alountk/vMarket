@@ -28,6 +28,7 @@ This project implements **Hexagonal Architecture** (Ports and Adapters) on both 
 - **Image Upload System**: 
   - Multiple cover images with drag-and-drop reordering
   - Individual uploads for 6 product sides (Front, Back, Right, Left, Top, Bottom)
+  - **Secure Presigned URLs** for direct, high-performance image access
   - Real-time preview thumbnails
   - MinIO/S3-compatible storage integration
 - **Dual-Hexagonal Pattern**: Decoupled layers for maximum testability.

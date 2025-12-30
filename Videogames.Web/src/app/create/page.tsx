@@ -25,6 +25,14 @@ export default function CreateVideogamePage() {
   const imageService = new ImageService();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const getImageUrl = (filename: string) => {
+    // We must use the full filename (with extension) because that's how it's stored in S3.
+    // The backend proxy endpoint /api/Images/{fileName} will stream the image content.
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5017/api";
+    return `${baseUrl}/Images/${filename}`;
+  };
   const [uploadingStates, setUploadingStates] = useState<
     Record<string, boolean>
   >({});
@@ -571,7 +579,7 @@ export default function CreateVideogamePage() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={`https://s3.androemda-surf.uk/videogames/${img}`}
+                          src={getImageUrl(img)}
                           alt={`Preview ${index + 1}`}
                           className="w-full h-32 object-cover"
                           onError={(e) => {
@@ -622,7 +630,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].frontalUrl}`}
+                        src={getImageUrl(contents[0].frontalUrl)}
                         alt="Front preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {
@@ -668,7 +676,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].backUrl}`}
+                        src={getImageUrl(contents[0].backUrl)}
                         alt="Back preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {
@@ -712,7 +720,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].rightSideUrl}`}
+                        src={getImageUrl(contents[0].rightSideUrl)}
                         alt="Right side preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {
@@ -758,7 +766,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].leftSideUrl}`}
+                        src={getImageUrl(contents[0].leftSideUrl)}
                         alt="Left side preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {
@@ -804,7 +812,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].topSideUrl}`}
+                        src={getImageUrl(contents[0].topSideUrl)}
                         alt="Top preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {
@@ -850,7 +858,7 @@ export default function CreateVideogamePage() {
                     <div className="mb-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`https://s3.androemda-surf.uk/videogames/${contents[0].bottomSideUrl}`}
+                        src={getImageUrl(contents[0].bottomSideUrl)}
                         alt="Bottom preview"
                         className="w-full h-24 object-cover rounded border border-gray-300 dark:border-gray-600"
                         onError={(e) => {

@@ -42,4 +42,20 @@ public class ImagesController : ControllerBase
             return StatusCode(500, "Internal server error during image upload.");
         }
     }
+
+    [HttpGet("{fileName}")]
+    [AllowAnonymous] // Allow public access to images
+    public async Task<IActionResult> GetImage(string fileName)
+    {
+        try
+        {
+            var url = await _imageService.GetImageUrlAsync(fileName);
+            return Redirect(url);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving image url {FileName}", fileName);
+            return NotFound();
+        }
+    }
 }

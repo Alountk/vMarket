@@ -43,4 +43,28 @@ public class MinioStorageAdapter : IStoragePort
         // Usually, in Hexagonal, we return the identifier/path.
         return fileName;
     }
+
+    public async Task<Stream> GetFileAsync(string fileName)
+    {
+        var request = new Amazon.S3.Model.GetObjectRequest
+        {
+            BucketName = _settings.BucketName,
+            Key = fileName
+        };
+
+        var response = await _s3Client.GetObjectAsync(request);
+        return response.ResponseStream;
+    }
+
+    public Task<string> GetFileUrlAsync(string fileName)
+    {
+        var request = new GetPreSignedUrlRequest
+        {
+            BucketName = _settings.BucketName,
+            Key = fileName,
+            Expires = DateTime.UtcNow.AddHours(1)
+        };
+
+        return Task.FromResult(_s3Client.GetPreSignedURL(request));
+    }
 }

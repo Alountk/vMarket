@@ -17,6 +17,16 @@ public class ImageService : IImageService
         return await _storagePort.UploadFileAsync(fileStream, fileName, contentType);
     }
 
+    public async Task<Stream> GetImageAsync(string fileName)
+    {
+        return await _storagePort.GetFileAsync(fileName);
+    }
+
+    public async Task<string> GetImageUrlAsync(string fileName)
+    {
+        return await _storagePort.GetFileUrlAsync(fileName);
+    }
+
     private string GetExtension(string contentType)
     {
         return contentType.ToLower() switch
