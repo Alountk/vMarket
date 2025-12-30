@@ -94,3 +94,4 @@ Desktop.ini
 **/playwright-report/
 **/playwright/.cache/
 *.log
+*.txt
