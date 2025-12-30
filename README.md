@@ -25,25 +25,43 @@ This project implements **Hexagonal Architecture** (Ports and Adapters) on both 
 - **Full Marketplace Flow**: Browse videogames by categories with an eBay-inspired design.
 - **User Authentication**: Secure registration and login with JWT and BCrypt hashing.
 - **Inventory Management**: Sell and list items with detailed forms (pricing, condition, categories).
+- **Image Upload System**: 
+  - Multiple cover images with drag-and-drop reordering
+  - Individual uploads for 6 product sides (Front, Back, Right, Left, Top, Bottom)
+  - Real-time preview thumbnails
+  - MinIO/S3-compatible storage integration
 - **Dual-Hexagonal Pattern**: Decoupled layers for maximum testability.
 - **Responsive Design**: Premium UI with Dark Mode support and micro-animations.
-- **Clean CI/CD**: Automated GitHub Actions pipeline for backend and frontend.
+- **Clean CI/CD**: Automated GitHub Actions pipeline for backend and frontend with E2E tests.
 
 ## 🛠 Tech Stack
 
 ### Backend
 - **Framework**: .NET 10.0
-- **Database**: PostgreSQL
-- **ORM**: Entity Framework Core
-- **Security**: JWT Authentication, BCrypt.Net-Next
-- **Testing**: xUnit, Moq
+- **Database**: PostgreSQL 17
+- **ORM**: Entity Framework Core 10.0
+- **Security**: 
+  - JWT Authentication (Microsoft.AspNetCore.Authentication.JwtBearer 10.0.0)
+  - BCrypt.Net-Next 4.0.3
+- **Storage**: MinIO (S3-compatible) via AWSSDK.S3 3.7.407
+- **Logging**: Serilog.AspNetCore 9.0.0
+- **Testing**: xUnit 2.9.2, Moq 4.20.72
+- **API Documentation**: Swashbuckle.AspNetCore 6.6.2
 
 ### Frontend
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Vanilla CSS with modern patterns
-- **API Client**: Axios with interceptors
-- **E2E Testing**: Playwright
+- **Framework**: Next.js 16.1.0 (App Router)
+- **Runtime**: React 19.2.0
+- **Language**: TypeScript 5.x
+- **Styling**: Tailwind CSS 4.x (Vanilla CSS with modern patterns)
+- **Icons**: Heroicons 2.2.0, Iconoir React 7.11.0
+- **API Client**: Axios 1.13.2 with interceptors
+- **E2E Testing**: Playwright 1.57.0
+
+### Infrastructure
+- **Containerization**: Docker & Docker Compose
+- **CI/CD**: GitHub Actions
+- **Node.js**: 20.x
+- **Package Manager**: npm
 
 ## 🚀 Getting Started
 
@@ -123,9 +141,10 @@ npm run test:e2e
 - [x] **Marketplace Discovery** (Home + Categories)
 - [x] **Sell Item Flow** (Forms + API integration)
 - [x] **CI/CD Pipeline** (Automated Linters + Tests)
-- [ ] **Image Uploads**: Integration with Cloudinary or AWS S3.
+- [x] **Image Upload System**: MinIO/S3 integration with multi-image support and drag-to-reorder
 - [ ] **Messaging System**: Real-time chat between buyers and sellers.
 - [ ] **Advanced Filtering**: Full-text search and faceted navigation.
+- [ ] **Payment Integration**: Stripe or PayPal checkout.
 
 ## 🤝 Contributing
 

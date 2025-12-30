@@ -100,14 +100,15 @@ test.describe('Marketplace Flow', () => {
       });
     });
 
-    // Upload image
-    const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByLabel('Upload Cover Image').click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles('tests/assets/test-image.png');
+    // Upload multiple cover images
+    await page.locator('#imageUpload').setInputFiles([
+      'tests/assets/test-image.png',
+      'tests/assets/test-image.png', // Using same image twice for testing
+    ]);
     
-    // Wait for upload and preview "READY" signal
-    await expect(page.locator('text=READY')).toBeVisible({ timeout: 10000 });
+    // Wait for uploads to complete - should see 2 image previews in grid
+    await expect(page.locator('.grid > div').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.grid > div')).toHaveCount(2);
     
     // Submit
     await page.getByRole('button', { name: 'List Item Now' }).click();
