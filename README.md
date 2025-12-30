@@ -1,138 +1,131 @@
-# .NET Hexagonal Boilerplate
+# vMarket: Fullstack Hexagonal Marketplace
 
-A robust, scalable, and production-ready boilerplate for building .NET applications using **Hexagonal Architecture** (Ports and Adapters). This project serves as a foundation for building complex domain-centric applications with a focus on maintainability, testability, and loose coupling.
+vMarket is a robust, scalable, and production-ready full-stack application built with a **Dual-Hexagonal Architecture**. It combines a high-performance .NET 10 backend with a modern Next.js 15 frontend, focusing on maintainability, testability, and a premium user experience.
+
+![Marketplace Preview](Videogames.Web/public/preview.png) *(Note: Add your preview image here)*
 
 ## 🏗 Architecture
 
-This project follows the **Hexagonal Architecture** pattern, ensuring a strict separation of concerns:
+This project implements **Hexagonal Architecture** (Ports and Adapters) on both the backend and frontend to ensure strict separation of concerns and business logic independence.
 
-- **Domain Layer**: The heart of the software. Contains entities, value objects, and domain logic. Zero dependencies.
-- **Application Layer**: Orchestrates use cases and defines ports (interfaces) for infrastructure. Depends only on Domain.
-- **Infrastructure Layer**: Implements ports defined in Application (e.g., Repositories, Database access). Depends on Application and Domain.
-- **API Layer**: The entry point (REST API). Depends on Application and Infrastructure (for dependency injection).
+### Backend (.NET)
+- **Domain Layer**: Pure logic, entities (Videogames, Users), and domain services.
+- **Application Layer**: Use cases, DTOs, and Ports (Interfaces).
+- **Infrastructure Layer**: Persistence (PostgreSQL + EF Core), Auth (BCrypt), and Adapters.
+- **API Layer**: ASP.NET Core controllers and DI configuration.
+
+### Frontend (Next.js)
+- **Domain**: Models and interface definitions for business logic.
+- **Infrastructure**: API services (Axios) and storage adapters.
+- **Presentation**: React components and Next.js App Router pages.
+- **Context/State**: Clean state management via React Context.
 
 ## ✨ Features
 
-- **Hexagonal Architecture**: Clean separation of concerns.
-- **DDD Principles**: Rich domain model with Entities and Value Objects.
-- **RESTful API**: Built with ASP.NET Core.
-- **User Management**:
-  - Secure password hashing (BCrypt).
-  - Email validation and normalization.
-  - Unique email constraints.
-  - Sensitive data protection (passwords never exposed).
-- **Videogames CRUD**: Example domain implementation.
-- **Database**: PostgreSQL with Entity Framework Core.
-- **Testing**: Unit tests with xUnit and Moq.
-- **Docker Support**: Ready for containerization.
+- **Full Marketplace Flow**: Browse videogames by categories with an eBay-inspired design.
+- **User Authentication**: Secure registration and login with JWT and BCrypt hashing.
+- **Inventory Management**: Sell and list items with detailed forms (pricing, condition, categories).
+- **Dual-Hexagonal Pattern**: Decoupled layers for maximum testability.
+- **Responsive Design**: Premium UI with Dark Mode support and micro-animations.
+- **Clean CI/CD**: Automated GitHub Actions pipeline for backend and frontend.
 
 ## 🛠 Tech Stack
 
-- **Framework**: .NET 10.0 (Preview)
+### Backend
+- **Framework**: .NET 10.0
 - **Database**: PostgreSQL
 - **ORM**: Entity Framework Core
-- **Logging**: Serilog
-- **Documentation**: Swagger / OpenAPI
-- **Testing**: xUnit, Moq, FluentAssertions
-- **Security**: BCrypt.Net-Next
+- **Security**: JWT Authentication, BCrypt.Net-Next
+- **Testing**: xUnit, Moq
+
+### Frontend
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS with modern patterns
+- **API Client**: Axios with interceptors
+- **E2E Testing**: Playwright
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+- [.NET SDK 10.0+](https://dotnet.microsoft.com/download)
+- [Node.js 20+](https://nodejs.org/)
+- [Docker](https://www.docker.com/) (for PostgreSQL)
 
-- [.NET SDK](https://dotnet.microsoft.com/download)
-- [Docker](https://www.docker.com/) (optional, for database)
-- [PostgreSQL](https://www.postgresql.org/) (if not using Docker)
-
-### Installation
+### Setup
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/dotnet-hexagonal-boilerplate.git
-   cd dotnet-hexagonal-boilerplate
+   git clone https://github.com/Alountk/Boilerplate.git
+   cd Boilerplate
    ```
 
-2. **Setup Database**
-   You can use the provided `docker-compose.yml` to start PostgreSQL:
+2. **Start Infrastructure (PostgreSQL)**
    ```bash
    docker-compose up -d
    ```
 
-3. **Apply Migrations**
+3. **Backend Setup**
    ```bash
+   # Run migrations
    cd Videogames.Infrastructure
    dotnet ef database update -s ../Videogames.API
-   ```
-
-4. **Run the Application**
-   ```bash
+   
+   # Run API
    cd ../Videogames.API
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/yourusername/dotnet-hexagonal-boilerplate.git
-    cd dotnet-hexagonal-boilerplate
-    ```
+   dotnet run
+   ```
+   The API will be available at `http://localhost:5017`.
 
-2.  **Setup Database**
-    You can use the provided `docker-compose.yml` to start PostgreSQL:
-    ```bash
-    docker-compose up -d
-    ```
+4. **Frontend Setup**
+   ```bash
+   cd Videogames.Web
+   npm install
+   npm run dev
+   ```
+   The Marketplace will be available at `http://localhost:3000`.
 
-3.  **Apply Migrations**
-    ```bash
-    cd Videogames.Infrastructure
-    dotnet ef database update -s ../Videogames.API
-    ```
+## 🧪 Testing
 
-4.  **Run the Application**
-    ```bash
-    cd ../Videogames.API
-    dotnet run
-    ```
+### Backend
+```bash
+dotnet test
+```
 
-    The API will be available at `http://localhost:5017` (or similar port).
-    Swagger UI: `http://localhost:5017/swagger`
-
-## Authentication
-
-The API is secured using JWT (JSON Web Tokens).
-
-1.  **Register**: Create a new user via `POST /api/Users`.
-2.  **Login**: Authenticate via `POST /api/Auth/login` to receive a JWT token.
-3.  **Access**: Include the token in the `Authorization` header for protected endpoints:
-    ```
-    Authorization: Bearer <your_token>
-    ```
-
-### Testing with Swagger
-
-1.  Navigate to `http://localhost:5017/swagger`.
-2.  Click the **Authorize** button.
-3.  Enter `Bearer <your_token>` in the value field.
-4.  Click **Authorize** and then **Close**.
-5.  Now you can execute protected endpoints.
+### Frontend E2E
+```bash
+cd Videogames.Web
+npx playwright install
+npm run test:e2e
+```
 
 ## 📂 Project Structure
 
 ```
-├── Videogames.Domain          # Core business logic (Entities, Value Objects, Ports)
-├── Videogames.Application     # Use cases, DTOs, Services, Interfaces
-├── Videogames.Infrastructure  # Database, Repositories, External Services
-├── Videogames.API             # REST Controllers, Configuration
-└── Videogames.Tests           # Unit and Integration Tests
+├── Videogames.API             # .NET REST entry point
+├── Videogames.Application     # Backend Use Cases & Ports
+├── Videogames.Domain          # Backend Entities & Domain Logic
+├── Videogames.Infrastructure  # DB, Migrations, Auth Implementations
+├── Videogames.Web             # Next.js 15 Frontend
+│   ├── src/app                # App Router (Pages)
+│   ├── src/components         # UI Components
+│   ├── src/context            # Auth & State Contexts
+│   ├── src/domain             # Frontend Models & Ports
+│   ├── src/infrastructure     # API Services & Axios Setup
+│   └── tests/                 # Playwright E2E Tests
+└── .github/workflows          # CI/CD (GitHub Actions)
 ```
 
 ## 🗺 Roadmap
 
-- [x] **Core Architecture Setup** (Hexagonal/DDD)
-- [x] **Videogames Module** (CRUD)
-- [x] **User Management** (Secure Registration/Updates)
-- [x] **Authentication**: Implement JWT (JSON Web Tokens) for secure login.
-- [ ] **Authorization**: Role-based access control (RBAC).
-- [ ] **Email Verification**: Send verification emails upon registration.
-- [ ] **Pagination & Filtering**: Advanced query capabilities for lists.
-- [ ] **CI/CD Pipeline**: GitHub Actions workflow for automated testing and deployment.
+- [x] **Full-stack Foundation** (Next.js + .NET)
+- [x] **Authentication System** (JWT + BCrypt)
+- [x] **Marketplace Discovery** (Home + Categories)
+- [x] **Sell Item Flow** (Forms + API integration)
+- [x] **CI/CD Pipeline** (Automated Linters + Tests)
+- [ ] **Image Uploads**: Integration with Cloudinary or AWS S3.
+- [ ] **Messaging System**: Real-time chat between buyers and sellers.
+- [ ] **Advanced Filtering**: Full-text search and faceted navigation.
 
 ## 🤝 Contributing
 
