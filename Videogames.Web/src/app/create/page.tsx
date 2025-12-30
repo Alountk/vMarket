@@ -135,6 +135,7 @@ export default function CreateVideogamePage() {
         })),
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await videogameService.create(payload as any);
       router.push("/");
     } catch (error) {
