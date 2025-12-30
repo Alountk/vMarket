@@ -58,10 +58,14 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 First Name
               </label>
               <input
+                id="firstName"
                 name="firstName"
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -70,10 +74,14 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 Last Name
               </label>
               <input
+                id="lastName"
                 name="lastName"
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -85,10 +93,14 @@ export default function RegisterPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 Email Address
               </label>
               <input
+                id="email"
                 name="email"
                 type="email"
                 onChange={handleChange}
@@ -98,10 +110,14 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 Password
               </label>
               <input
+                id="password"
                 name="password"
                 type="password"
                 onChange={handleChange}
@@ -113,10 +129,14 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+            <label
+              htmlFor="address"
+              className="block text-sm font-semibold mb-2 dark:text-gray-300"
+            >
               Address
             </label>
             <input
+              id="address"
               name="address"
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -126,10 +146,14 @@ export default function RegisterPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="city"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 City
               </label>
               <input
+                id="city"
                 name="city"
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -137,10 +161,14 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="country"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 Country
               </label>
               <input
+                id="country"
                 name="country"
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -148,10 +176,14 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-2 dark:text-gray-300">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-semibold mb-2 dark:text-gray-300"
+              >
                 Phone
               </label>
               <input
+                id="phone"
                 name="phone"
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
