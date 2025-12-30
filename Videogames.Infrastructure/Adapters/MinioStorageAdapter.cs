@@ -1,4 +1,5 @@
 using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.Extensions.Options;
 using Videogames.Domain.Ports;
@@ -22,7 +23,7 @@ public class MinioStorageAdapter : IStoragePort
             UseHttp = !_settings.UseSSL
         };
 
-        _s3Client = new AmazonS3Client(_settings.AccessKey, _settings.SecretKey, config);
+        _s3Client = new AmazonS3Client(_settings.User, _settings.Secret, config);
     }
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
@@ -42,5 +43,29 @@ public class MinioStorageAdapter : IStoragePort
         // For MinIO, we return the constructed URL or just the fileName depending on how the frontend should access it.
         // Usually, in Hexagonal, we return the identifier/path.
         return fileName;
+    }
+
+    public async Task<Stream> GetFileAsync(string fileName)
+    {
+        var request = new Amazon.S3.Model.GetObjectRequest
+        {
+            BucketName = _settings.BucketName,
+            Key = fileName
+        };
+
+        var response = await _s3Client.GetObjectAsync(request);
+        return response.ResponseStream;
+    }
+
+    public Task<string> GetFileUrlAsync(string fileName)
+    {
+        var request = new GetPreSignedUrlRequest
+        {
+            BucketName = _settings.BucketName,
+            Key = fileName,
+            Expires = DateTime.UtcNow.AddHours(1)
+        };
+
+        return Task.FromResult(_s3Client.GetPreSignedURL(request));
     }
 }
