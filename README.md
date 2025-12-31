@@ -75,8 +75,8 @@ This project implements **Hexagonal Architecture** (Ports and Adapters) on both 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Alountk/Boilerplate.git
-   cd Boilerplate
+   git clone https://github.com/Alountk/vMarket.git
+   cd vMarket
    ```
 
 2. **Start Infrastructure (PostgreSQL)**
